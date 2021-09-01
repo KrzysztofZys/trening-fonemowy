@@ -1,0 +1,44 @@
+{
+    "name": "Odtworzenie rytmu",
+    "description": "Wskaż prawidłową kolejność usłyszanych dźwięków",
+    "repeat": 5,
+    "levels": [ "2 dźwięki", "3 dźwięki", "4 dźwięki" ],
+    "elements": [
+        {
+            "id": 0,
+            "name": "pianino",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        },
+        {
+            "id": 1,
+            "name": "bębenek",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        },
+        {
+            "id": 2,
+            "name": "flet",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        },
+        {
+            "id": 3,
+            "name": "harfa",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        },
+        {
+            "id": 4,
+            "name": "gitara",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        },
+        {
+            "id": 5,
+            "name": "dzwonki",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        }
+    ]
+}

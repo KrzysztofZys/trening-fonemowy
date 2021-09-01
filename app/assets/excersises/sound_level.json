@@ -1,0 +1,47 @@
+{
+    "name": "Rozróżnienie głośności",
+    "description": "Wskaż jaki dźwięk usłyszałeś! Wysoki czy niski? Głośny czy cichy?",
+    "repeat": 5,
+    "levels": 2,
+    "pairsLevel": [
+        {
+            "id": 0,
+            "name": "pianinoLevel",
+            "soundTop": "pathtosound",
+            "soundBottom": "pathtosound"
+        },
+        {
+            "id": 1,
+            "name": "bębenek",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        },
+        {
+            "id": 2,
+            "name": "flet",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        },
+        {
+            "id": 3,
+            "name": "harfa",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        },
+        {
+            "id": 4,
+            "name": "gitara",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        },
+        {
+            "id": 5,
+            "name": "dzwonki",
+            "sound": "pathtosound",
+            "image": "pathtoimage"
+        }
+    ],
+    "pairsPitched": [
+
+    ]
+}
