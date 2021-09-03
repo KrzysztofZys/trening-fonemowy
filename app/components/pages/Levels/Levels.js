@@ -20,7 +20,7 @@ export default function Levels({ route, navigation }) {
                                 index%3 === 1 ? stylesPage.borderPurple : null,
                                 index%3 === 2 ? stylesPage.borderRed : null
                             ]}
-                            onPress={() => navigation.navigate('Trainings')}
+                            onPress={() => navigation.navigate('Info')}
                         >
                             <Text style={stylesPage.text}>{name}</Text>
                         </TouchableOpacity>

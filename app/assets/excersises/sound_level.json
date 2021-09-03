@@ -2,7 +2,7 @@
     "name": "Rozróżnienie głośności",
     "description": "Wskaż jaki dźwięk usłyszałeś! Wysoki czy niski? Głośny czy cichy?",
     "repeat": 5,
-    "levels": 2,
+    "levels": ["amplitudy", "głośność"],
     "pairsLevel": [
         {
             "id": 0,

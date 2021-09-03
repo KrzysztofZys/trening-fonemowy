@@ -4,7 +4,6 @@ import * as React from 'react';
 import { Text, View, TouchableOpacity, ImageBackground } from 'react-native';
 import stylesPage from './Trainings.style';
 import { trainingsService } from '../../../services/trainingsService';
-import { excersises } from '../../../constants/excersisesConstants';
 
 export default function Trainings({ navigation }) {
     const trainings = useSelector((state) => state.trainings);
