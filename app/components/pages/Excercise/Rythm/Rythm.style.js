@@ -41,6 +41,9 @@ export default StyleSheet.create({
     button: {
         
     },
+    buttonDisabled: {
+        opacity: 0.1
+    },
     bottomContainer: {
         flex: 1,
         alignSelf: 'flex-end',
@@ -64,7 +67,12 @@ export default StyleSheet.create({
         color: '#ffffff'
 
     },
-    forwardButtonTextNo: {
-        color: '#170e76'
+
+    goodComment:{
+        position:'absolute',
+        fontSize: 30,
+        left: '30%',
+        bottom: '30%',
+        color: 'green'
     }
 });

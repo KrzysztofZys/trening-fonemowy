@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { useIsFocused } from "@react-navigation/native";
 import * as React from 'react';
-import { Text, View, Image, TouchableOpacity, ImageBackground } from 'react-native';
+import { Text, View, Image, TouchableOpacity, ImageBackground, BackHandler, Alert } from 'react-native';
 import { Audio } from 'expo-av';
 import stylesPage from './Rythm.style';
 import rythmImages from '../../../importedImages/rythmImages';
@@ -8,8 +9,8 @@ import rythmSounds from '../../../importedSounds/rythmSounds';
 
 function getRandomElements(elements, level, isRepeatedAllowed) {
   let excersises = [];
-
   for (let i = 0; i < (level + 2); i++) {
+    
     let newElement = elements[Math.floor(Math.random() * elements.length)];
 
     if (!isRepeatedAllowed) {
@@ -17,27 +18,29 @@ function getRandomElements(elements, level, isRepeatedAllowed) {
       else excersises = [...excersises, newElement];
     } else excersises = [...excersises, newElement];
   }
-
   return excersises;
+}
+
+function checkEqualCombinations(comb1, comb2) {
+  if(JSON.stringify(comb1) == JSON.stringify(comb2)) return true;
+  return false;
 }
 
 export default function Rythm({ route, navigation }) {
   const { excersise, index } = route.params;
+  const isFocused = useIsFocused();
   const [couter, setCounter] = useState(0);
 
   const [isExcersiseDone, setisExcersiseDone] = useState(false);
+  const [isExcersiseFail, setIsExcersiseFail] = useState(false);
 
   const [userCombination, setUserCombination] = useState([]);
   const [excersiseElements, setExcersiseElements] = useState([]);
   const [gameElements, setGameElements] = useState([]);
 
   const [listenSoundNum, setListenSoundNum] = useState(0);
-  const [wasPlayed, setWasPlayed] = useState(false);
   const [isFirstIterationEnded, setIsFirstIterationEnded] = useState(false);
-
-  const addToUserCombination = (element) => {
-    setUserCombination([...userCombination, element]);
-  }
+  const [shoudMusicStart, setShoudMusicStart] = useState();
 
   const [Loaded, SetLoaded] = React.useState(false);
   const [Loading, SetLoading] = React.useState(false);
@@ -93,30 +96,32 @@ export default function Rythm({ route, navigation }) {
   const LoadAudio = async (data) => {
     SetLoading(true);
     const checkLoading = await sound.current.getStatusAsync();
-    if (checkLoading.isLoaded === false) {
-      try {
-        const result = await sound.current.loadAsync(
-          data,
-          {},
-          true
-        );
-        if (result.isLoaded === false) {
+    if (data !== undefined) {
+      if (checkLoading.isLoaded === false) {
+        try {
+          const result = await sound.current.loadAsync(
+            data,
+            {},
+            true
+          );
+          if (result.isLoaded === false) {
+            SetLoading(false);
+            SetLoaded(false);
+            console.log('Error in Loading Audio');
+          } else {
+            sound.current.setOnPlaybackStatusUpdate(UpdateStatus);
+            SetLoading(false);
+            SetLoaded(true);
+            SetDuration(result.durationMillis);
+          }
+        } catch (error) {
           SetLoading(false);
           SetLoaded(false);
-          console.log('Error in Loading Audio');
-        } else {
-          sound.current.setOnPlaybackStatusUpdate(UpdateStatus);
-          SetLoading(false);
-          SetLoaded(true);
-          SetDuration(result.durationMillis);
         }
-      } catch (error) {
+      } else {
         SetLoading(false);
-        SetLoaded(false);
+        SetLoaded(true);
       }
-    } else {
-      SetLoading(false);
-      SetLoaded(true);
     }
   };
 
@@ -129,7 +134,11 @@ export default function Rythm({ route, navigation }) {
           const result = await sound.current.unloadAsync();
           if (result.isLoaded === false) {
             console.log('unloaded!!!')
-            setWasPlayed(true);
+            setListenSoundNum(listenSoundNum + 1)
+            if (listenSoundNum >= gameElements.length-1) {
+              setListenSoundNum(0);
+              setIsFirstIterationEnded(true);
+            }
             SetLoading(false);
             SetLoaded(false);
           }
@@ -140,41 +149,75 @@ export default function Rythm({ route, navigation }) {
 
   }
 
+  const RepeatSequence = () => {
+    console.log('Repeat try')
+    setShoudMusicStart(!shoudMusicStart)
+    setIsFirstIterationEnded(false)
+  }
+
+  const addToUserCombination = (element) => {
+    setUserCombination(() => [...userCombination, element]);
+  }
+
+  //Check if user comb in ok
   useEffect(() => {
     if (userCombination.length === (index + 2)) {
-      setisExcersiseDone(true);
+      if (checkEqualCombinations(userCombination, gameElements)) {
+        setIsExcersiseFail(false);
+        setisExcersiseDone(true);
+      } else {
+        setIsExcersiseFail(true);
+      }
+
+      setUserCombination([]);
     }
   }, [userCombination])
 
+  //Initial ExcersiseElements
   useEffect(() => {
-    //Initial variables
-    setExcersiseElements(getRandomElements(excersise.elements, index, false));
+    if(isFocused) setExcersiseElements(getRandomElements(excersise.elements, index, false));
+  }, [isFocused])
+
+  useEffect(() => {
     setGameElements(getRandomElements(excersiseElements, index, true));
     setIsFirstIterationEnded(false);
     setListenSoundNum(0);
-    console.log('init')
-  }, [])
+    setisExcersiseDone(false);
+    setIsExcersiseFail(false);
+    console.log('init');
+    setShoudMusicStart(false);
+  }, [JSON.stringify(excersiseElements)])
 
   useEffect(() => {
-    //First iteration of listening the excersise
-    if(gameElements[0] !== undefined) {
-      if(!isFirstIterationEnded){
-        LoadAudio(rythmSounds[parseInt(gameElements[listenSoundNum].id)])
-        PlayAudio()
-  
-        if(wasPlayed) {
-          setWasPlayed(false);
-        } else {
-          setListenSoundNum(listenSoundNum + 1)
-          if (listenSoundNum > gameElements.length) {
-            setListenSoundNum(0);
-            setIsFirstIterationEnded(true);
-          }
+    if(gameElements[0]!==undefined) setShoudMusicStart(true)
+  }, [JSON.stringify(gameElements)])
+
+  useEffect(() => {
+    //Sequence
+    console.log('try to play sound in use eff')
+      if (!isFirstIterationEnded) {
+        console.log('first iteration not ended')
+        if(gameElements[0]!==undefined) {
+          LoadAudio(rythmSounds[parseInt(gameElements[listenSoundNum]?.id)])
+          PlayAudio()
         }
+        
       }
-    } else SetLoaded(false)
-    
-  }, [Loaded])
+
+  }, [Loaded, shoudMusicStart])
+
+  //Prevent from going back when music is on
+  useEffect(() => {
+    const backAction = () => {
+      if (isFirstIterationEnded) {
+        return false;
+      }
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, [isFirstIterationEnded]);
 
   if (excersise === undefined) return <View style={stylesPage.container}><Text style={stylesPage.mainText}>No data</Text></View>
 
@@ -188,19 +231,21 @@ export default function Rythm({ route, navigation }) {
           <View style={stylesPage.excersiseContainer}>
             {
               excersiseElements.map((element, idx) =>
-                <TouchableOpacity style={stylesPage.button} key={idx} onPress={() => addToUserCombination(element)}>
-                  <Image style={stylesPage.imageButton} source={rythmImages[element.id]}></Image>
+                <TouchableOpacity style={stylesPage.button} key={idx} disabled={!isFirstIterationEnded} onPress={() => addToUserCombination(element)}>
+                  <Image style={[stylesPage.imageButton, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={rythmImages[element.id]}></Image>
                 </TouchableOpacity>
               )
             }
           </View>
         }
+        {isExcersiseFail && <Text style={stylesPage.goodComment}>BAD BOY!!!!!</Text>}
+        {isExcersiseDone && <Text style={stylesPage.goodComment}>BRAWISSIMO!!!!!</Text>}
         <View style={stylesPage.bottomContainer}>
-          <TouchableOpacity style={stylesPage.soundButton}>
-            <Image style={stylesPage.soundIcon} source={require('../../../../assets/images/audio.png')}></Image>
+          <TouchableOpacity style={stylesPage.soundButton} disabled={!isFirstIterationEnded} onPress={() => RepeatSequence()}>
+            <Image style={[stylesPage.soundIcon, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={require('../../../../assets/images/audio.png')}></Image>
           </TouchableOpacity>
           <TouchableOpacity style={stylesPage.forwardButton} disabled={!isExcersiseDone}>
-            <Text style={[stylesPage.forwardButtonText, !isExcersiseDone && stylesPage.forwardButtonTextNo]}>dalej</Text>
+            <Text style={[stylesPage.forwardButtonText, !isExcersiseDone && stylesPage.buttonDisabled]}>dalej</Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>
