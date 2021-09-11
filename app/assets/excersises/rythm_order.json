@@ -7,38 +7,44 @@
         {
             "id": 0,
             "name": "pianino",
-            "sound": "pathtosound",
-            "image": "pathtoimage"
+            "sound": "piano.wav",
+            "image": "piano.png"
         },
         {
             "id": 1,
             "name": "bębenek",
-            "sound": "pathtosound",
-            "image": "pathtoimage"
+            "sound": "drum.mp3",
+            "image": "drum.png"
         },
         {
             "id": 2,
             "name": "flet",
-            "sound": "pathtosound",
-            "image": "pathtoimage"
+            "sound": "flute.mp3",
+            "image": "flute.png"
         },
         {
             "id": 3,
-            "name": "harfa",
-            "sound": "pathtosound",
-            "image": "pathtoimage"
+            "name": "dzwonek",
+            "sound": "bell.mp3",
+            "image": "bell.png"
         },
         {
             "id": 4,
             "name": "gitara",
-            "sound": "pathtosound",
-            "image": "pathtoimage"
+            "sound": "guitar.mp3",
+            "image": "guitar.png"
         },
         {
             "id": 5,
-            "name": "dzwonki",
-            "sound": "pathtosound",
-            "image": "pathtoimage"
+            "name": "trąbka",
+            "sound": "trumpet.mp3",
+            "image": "trumpet.png"
+        },
+        {
+            "id": 6,
+            "name": "skrzypce",
+            "sound": "violin.mp3",
+            "image": "violin.png"
         }
     ]
 }

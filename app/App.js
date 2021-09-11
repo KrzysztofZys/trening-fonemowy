@@ -12,6 +12,7 @@ import Loading from './components/pages/Loading/Loading'
 import Trainings from './components/pages/Trainings/Trainings'
 import Levels from './components/pages/Levels/Levels'
 import Info from './components/pages/Excercise/Info/Info'
+import Rythm from './components/pages/Excercise/Rythm/Rythm'
 import * as React from 'react';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
@@ -132,6 +133,13 @@ export default function App() {
             <Drawer.Screen
             name="Info"
             component={Info}
+            options={{
+              headerShown: false,
+              drawerLabel: () => null
+            }} />
+            <Drawer.Screen
+            name="Rythm"
+            component={Rythm}
             options={{
               headerShown: false,
               drawerLabel: () => null

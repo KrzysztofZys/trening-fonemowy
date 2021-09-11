@@ -16,11 +16,11 @@ export default function Levels({ route, navigation }) {
                         <TouchableOpacity key={index}
                             style={[
                                 stylesPage.button,
-                                index%3 === 0 ? stylesPage.borderYellow : null,
-                                index%3 === 1 ? stylesPage.borderPurple : null,
-                                index%3 === 2 ? stylesPage.borderRed : null
+                                index % 3 === 0 ? stylesPage.borderYellow : null,
+                                index % 3 === 1 ? stylesPage.borderPurple : null,
+                                index % 3 === 2 ? stylesPage.borderRed : null
                             ]}
-                            onPress={() => navigation.navigate('Info')}
+                            onPress={() => navigation.navigate('Info', { excersise, index })}
                         >
                             <Text style={stylesPage.text}>{name}</Text>
                         </TouchableOpacity>
