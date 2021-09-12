@@ -10,7 +10,7 @@ import rythmSounds from '../../../importedSounds/rythmSounds';
 function getRandomElements(elements, level, isRepeatedAllowed) {
   let excersises = [];
   for (let i = 0; i < (level + 2); i++) {
-    
+
     let newElement = elements[Math.floor(Math.random() * elements.length)];
 
     if (!isRepeatedAllowed) {
@@ -22,17 +22,18 @@ function getRandomElements(elements, level, isRepeatedAllowed) {
 }
 
 function checkEqualCombinations(comb1, comb2) {
-  if(JSON.stringify(comb1) == JSON.stringify(comb2)) return true;
+  if (JSON.stringify(comb1) == JSON.stringify(comb2)) return true;
   return false;
 }
 
 export default function Rythm({ route, navigation }) {
   const { excersise, index } = route.params;
   const isFocused = useIsFocused();
-  const [couter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(0);
 
   const [isExcersiseDone, setisExcersiseDone] = useState(false);
   const [isExcersiseFail, setIsExcersiseFail] = useState(false);
+  const [isFinished, setIsFinished] = useState(false);
 
   const [userCombination, setUserCombination] = useState([]);
   const [excersiseElements, setExcersiseElements] = useState([]);
@@ -135,7 +136,7 @@ export default function Rythm({ route, navigation }) {
           if (result.isLoaded === false) {
             console.log('unloaded!!!')
             setListenSoundNum(listenSoundNum + 1)
-            if (listenSoundNum >= gameElements.length-1) {
+            if (listenSoundNum >= gameElements.length - 1) {
               setListenSoundNum(0);
               setIsFirstIterationEnded(true);
             }
@@ -149,19 +150,29 @@ export default function Rythm({ route, navigation }) {
 
   }
 
-  const RepeatSequence = () => {
-    console.log('Repeat try')
+  const repeatSequence = () => {
     setShoudMusicStart(!shoudMusicStart)
     setIsFirstIterationEnded(false)
+    setIsExcersiseFail(false)
+  }
+
+  const nextSequence = () => {
+    setExcersiseElements(getRandomElements(excersise.elements, index, false));
+    setCounter(counter + 1)
+    setisExcersiseDone(false);
   }
 
   const addToUserCombination = (element) => {
-    setUserCombination(() => [...userCombination, element]);
+    setUserCombination([...userCombination, element]);
   }
 
+  useEffect(() => {
+    if(counter === (excersise.repeat - 1)) setIsFinished(true)
+  }, [counter])
+  
   //Check if user comb in ok
   useEffect(() => {
-    if (userCombination.length === (index + 2)) {
+    if (userCombination.length >= (index + 2)) {
       if (checkEqualCombinations(userCombination, gameElements)) {
         setIsExcersiseFail(false);
         setisExcersiseDone(true);
@@ -171,38 +182,41 @@ export default function Rythm({ route, navigation }) {
 
       setUserCombination([]);
     }
-  }, [userCombination])
+  }, [JSON.stringify(userCombination)])
 
   //Initial ExcersiseElements
   useEffect(() => {
-    if(isFocused) setExcersiseElements(getRandomElements(excersise.elements, index, false));
+    if (isFocused) {
+      setExcersiseElements(getRandomElements(excersise.elements, index, false))
+      setCounter(0)
+      setIsFinished(false)
+      setisExcersiseDone(false);
+      setIsExcersiseFail(false);
+    };
   }, [isFocused])
 
   useEffect(() => {
     setGameElements(getRandomElements(excersiseElements, index, true));
     setIsFirstIterationEnded(false);
     setListenSoundNum(0);
-    setisExcersiseDone(false);
-    setIsExcersiseFail(false);
-    console.log('init');
+    setUserCombination([]);
     setShoudMusicStart(false);
   }, [JSON.stringify(excersiseElements)])
 
+  //Toggle start music when new elements
   useEffect(() => {
-    if(gameElements[0]!==undefined) setShoudMusicStart(true)
+    if (gameElements[0] !== undefined) setShoudMusicStart(true)
   }, [JSON.stringify(gameElements)])
 
+  //Sequence
   useEffect(() => {
-    //Sequence
-    console.log('try to play sound in use eff')
-      if (!isFirstIterationEnded) {
-        console.log('first iteration not ended')
-        if(gameElements[0]!==undefined) {
-          LoadAudio(rythmSounds[parseInt(gameElements[listenSoundNum]?.id)])
-          PlayAudio()
-        }
-        
+    if (!isFirstIterationEnded) {
+      if (gameElements[0] !== undefined) {
+        LoadAudio(rythmSounds[parseInt(gameElements[listenSoundNum]?.id)])
+        PlayAudio()
       }
+
+    }
 
   }, [Loaded, shoudMusicStart])
 
@@ -231,22 +245,34 @@ export default function Rythm({ route, navigation }) {
           <View style={stylesPage.excersiseContainer}>
             {
               excersiseElements.map((element, idx) =>
-                <TouchableOpacity style={stylesPage.button} key={idx} disabled={!isFirstIterationEnded} onPress={() => addToUserCombination(element)}>
+                <TouchableOpacity style={stylesPage.button} key={idx} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => addToUserCombination(element)}>
                   <Image style={[stylesPage.imageButton, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={rythmImages[element.id]}></Image>
                 </TouchableOpacity>
               )
             }
           </View>
         }
-        {isExcersiseFail && <Text style={stylesPage.goodComment}>BAD BOY!!!!!</Text>}
-        {isExcersiseDone && <Text style={stylesPage.goodComment}>BRAWISSIMO!!!!!</Text>}
+        {isExcersiseFail &&
+          <TouchableOpacity style={stylesPage.commentBox}disabled={false} onPress={() => repeatSequence()}>
+            <Image style={stylesPage.comment} source={require('../../../../assets/images/try.png')} />
+          </TouchableOpacity>
+        }
+        {isExcersiseDone && <Image style={[stylesPage.comment, stylesPage.commentBox]} source={require('../../../../assets/images/ok.png')} />}
         <View style={stylesPage.bottomContainer}>
-          <TouchableOpacity style={stylesPage.soundButton} disabled={!isFirstIterationEnded} onPress={() => RepeatSequence()}>
+          <TouchableOpacity style={stylesPage.soundButton} disabled={!isFirstIterationEnded} onPress={() => repeatSequence()}>
             <Image style={[stylesPage.soundIcon, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={require('../../../../assets/images/audio.png')}></Image>
           </TouchableOpacity>
-          <TouchableOpacity style={stylesPage.forwardButton} disabled={!isExcersiseDone}>
+          {
+            isFinished
+            ?
+            <TouchableOpacity style={stylesPage.forwardButton} disabled={!isExcersiseDone} onPress={() => navigation.navigate('Trainings')}>
             <Text style={[stylesPage.forwardButtonText, !isExcersiseDone && stylesPage.buttonDisabled]}>dalej</Text>
           </TouchableOpacity>
+            :
+            <TouchableOpacity style={stylesPage.forwardButton} disabled={!isExcersiseDone} onPress={() => nextSequence()}>
+            <Text style={[stylesPage.forwardButtonText, !isExcersiseDone && stylesPage.buttonDisabled]}>dalej</Text>
+           </TouchableOpacity>
+          }
         </View>
       </ImageBackground>
     </View>

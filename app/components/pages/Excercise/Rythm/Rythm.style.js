@@ -68,11 +68,17 @@ export default StyleSheet.create({
 
     },
 
-    goodComment:{
+    comment:{
+
+        height: 100,
+        width: 100,
+
+    },
+    commentBox:{
         position:'absolute',
-        fontSize: 30,
-        left: '30%',
-        bottom: '30%',
-        color: 'green'
+        height: 100,
+        width: 100,
+        left: '38%',
+        bottom: '24%',
     }
 });
