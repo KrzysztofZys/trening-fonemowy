@@ -16,7 +16,7 @@ export default function Info({ route, navigation }) {
                 <Text style={stylesPage.content}>{excersise.description}</Text>
                 <TouchableOpacity
                     style={stylesPage.button}
-                    onPress={() => navigation.navigate('Rythm', { excersise, index })}
+                    onPress={() => navigation.navigate(excersise.route, { excersise, index })}
                 >
                     <Text style={stylesPage.buttonText}>Dalej</Text>
                 </TouchableOpacity>

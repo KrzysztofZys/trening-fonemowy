@@ -1,4 +1,5 @@
 export const excersises = {
     rythmOrderData : "rythmOrderData",
-    soundLevelData : "soundLevelData"
+    soundLevelData : "soundLevelData",
+    paronyms : "paronyms"
 }

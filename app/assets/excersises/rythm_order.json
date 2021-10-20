@@ -1,4 +1,5 @@
 {
+    "route": "Rythm",
     "name": "Odtworzenie rytmu",
     "description": "Wskaż prawidłową kolejność usłyszanych dźwięków",
     "repeat": 5,

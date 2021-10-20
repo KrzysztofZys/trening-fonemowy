@@ -1,0 +1,7 @@
+{
+    "route": "Differention",
+    "name": "Rozróżnianie szeregów",
+    "description": "Jaką głoskę słyszysz w wypowiedzianym wyrazie? S, a może SZ?",
+    "repeat": 10,
+    "levels": ["syczące / szumiące"]
+}

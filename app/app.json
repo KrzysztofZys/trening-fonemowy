@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "app",
-    "slug": "app",
-    "version": "1.0.0",
+    "name": "TRENING SŁUCHU FONEMOWEGO",
+    "slug": "treningfonemowy",
+    "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/backgrounds/Loading.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,9 +21,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.kz.treningfonemowy"
     },
     "web": {
       "favicon": "./assets/favicon.png"
