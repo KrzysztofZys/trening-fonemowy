@@ -2,7 +2,7 @@
     "route": "Rythm",
     "name": "Odtworzenie rytmu",
     "description": "Wskaż prawidłową kolejność usłyszanych dźwięków",
-    "repeat": 5,
+    "repeat": 2,
     "levels": [ "2 dźwięki", "3 dźwięki", "4 dźwięki" ],
     "elements": [
         {

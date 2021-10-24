@@ -18,7 +18,7 @@ export default StyleSheet.create({
         borderLeftWidth: 9,
         borderRightWidth: 9,
         marginTop: 20,
-        width: 250,
+        width: 300,
         height: 90,
         justifyContent: 'center',
         alignItems: 'center'
@@ -29,7 +29,7 @@ export default StyleSheet.create({
         color: '#170e76',
         textTransform: 'lowercase',
         backgroundColor: '#fff',
-        borderRadius: 30,
+        borderRadius: 30
     },
     borderPurple: {
         borderColor: '#6222f5',

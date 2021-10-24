@@ -7,6 +7,7 @@ import {
 } from '@react-navigation/drawer';
 import Home from '../components/pages/Home/Home'
 import None from '../components/pages/None/None'
+import Name from '../components/pages/Name/Name'
 import Loading from '../components/pages/Loading/Loading'
 import Trainings from '../components/pages/Trainings/Trainings'
 import Levels from '../components/pages/Levels/Levels'
@@ -17,6 +18,7 @@ import Paronyms from '../components/pages/Excercise/Paronyms/Paronyms'
 import Differention from '../components/pages/Excercise/Differention/Differention'
 import Breaking from '../components/pages/Excercise/Breaking/Breaking'
 import Where from '../components/pages/Excercise/Where/Where'
+import Results from '../components/pages/Results/Results';
 
 const Drawer = createDrawerNavigator();
 
@@ -82,7 +84,7 @@ export default function DrawerNav() {
             }} />
           <Drawer.Screen
             name="Tests"
-            component={None}
+            component={Name}
             options={{
               title: 'TEST',
               headerStyle: {
@@ -96,7 +98,7 @@ export default function DrawerNav() {
             }} />
           <Drawer.Screen
             name="Results"
-            component={None}
+            component={Results}
             options={{
               title: 'WYNIKI',
               headerStyle: {

@@ -1,11 +1,17 @@
 import * as React from 'react';
-import { Text, View, TouchableOpacity, ImageBackground} from 'react-native';
+import { Text, View, TouchableOpacity, ImageBackground, Dimensions} from 'react-native';
 import stylesPage from './Home.style';
 
 export default function Home({ navigation }) {
+
+    const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
+    let backSource = require('../../../assets/backgrounds/Home.png');
+    if ((windowHeight / windowWidth) < 1.7) backSource = require('../../../assets/backgrounds/HomeB.png')
+
     return (
         <View style={stylesPage.container}>
-            <ImageBackground source={require('../../../assets/backgrounds/Home.png')} resizeMode="cover" style={stylesPage.backimage}>
+            <ImageBackground source={backSource} resizeMode="cover" style={stylesPage.backimage}>
                 <TouchableOpacity
                 style={[stylesPage.button, stylesPage.borderPurple]}
                 onPress={() => navigation.navigate('Trainings')}

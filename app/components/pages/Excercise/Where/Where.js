@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useIsFocused } from "@react-navigation/native";
 import * as React from 'react';
-import { Text, View, Image, TouchableOpacity, ImageBackground, BackHandler } from 'react-native';
+import { Text, View, Image, TouchableOpacity, ImageBackground, BackHandler, Dimensions } from 'react-native';
 import { Audio } from 'expo-av';
 import ProgressBar from '../../../elements/ProgressBar/ProgressBar';
 import LogoExcersise from '../../../elements/LogoExcersise/LogoExcersise';
@@ -16,6 +16,8 @@ import whereSzSounds from '../../../importedSounds/whereSzSounds';
 import whereCzSounds from '../../../importedSounds/whereCzSounds';
 import whereRzSounds from '../../../importedSounds/whereRzSounds';
 import whereDzSounds from '../../../importedSounds/whereDzSounds';
+import { storageConstants } from '../../../../constants/storageConstants';
+import { saveData, readData } from '../../../../services/storageService';
 
 function getRandomElement(elements, usedLetters, setFunc) {
   let difNum = true;
@@ -54,7 +56,9 @@ function getRandomGame(elements, number) {
 }
 
 export default function Where({ route, navigation }) {
-  const { excersise, index } = route.params;
+  const { excersise, index, name, points, trainings } = route.params;
+  const [pointsLocal, setPointsLocal] = useState(points);
+  const [tableData, setTableData] = useState();
   const isFocused = useIsFocused();
   const [counter, setCounter] = useState(0);
   const [shortCounter, setShortCounter] = useState(0);
@@ -73,10 +77,20 @@ export default function Where({ route, navigation }) {
   const [gameElements, setGameElements] = useState([]);
 
   const [isFirstIterationEnded, setIsFirstIterationEnded] = useState(false);
-  const [shoudMusicStart, setShoudMusicStart] = useState(false);
 
   const [Loaded, SetLoaded] = useState(false);
   const sound = useRef(new Audio.Sound());
+
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
+  const [isSmall, setIsSmall] = useState(false);
+
+  useEffect(() => {
+    if ((windowHeight / windowWidth) < 1.7) setIsSmall(true);
+  })
+
+  let backSource = require('../../../../assets/backgrounds/Example.png');
+  if ((windowHeight / windowWidth) < 1.7) backSource = require('../../../../assets/backgrounds/ExampleB.png')
 
   const UpdateStatus = async (data) => {
     try {
@@ -130,21 +144,23 @@ export default function Where({ route, navigation }) {
   };
 
   const UnloadAudio = async () => {
+    
     const checkLoading = await sound.current.getStatusAsync();
 
     if (checkLoading.isLoaded)
       if (checkLoading.isPlaying === false) {
         try {
           const result = await sound.current.unloadAsync();
+          if (letterChoose) {
+            console.log('Set first iter ended')
+            setIsFirstIterationEnded(true)
+          } else {
+            setLetterChoose(true);
+            setIsTemp(!isTemp);
+          }
           if (result.isLoaded === false) {
             SetLoaded(false);
-            if (letterChoose) {
-              console.log('Set first iter ended')
-              setIsFirstIterationEnded(true)
-            } else {
-              setLetterChoose(true);
-              setIsTemp(!isTemp);
-            }
+
           }
         } catch (error) {
           console.log('error ' + error)
@@ -153,13 +169,29 @@ export default function Where({ route, navigation }) {
   }
 
   const repeatSequence = () => {
-    setShoudMusicStart(!shoudMusicStart)
+    setIsTemp(!isTemp)
     setIsFirstIterationEnded(false)
     setIsExcersiseFail(false)
   }
 
   const nextSequence = () => {
-    if (isFinished) navigation.navigate('Trainings');
+    if (isFinished) {
+      if (name === undefined) navigation.navigate('Trainings')
+      else {
+        if(tableData === '') {
+          setTableData = [];
+        }
+        let newTable = tableData
+        const newUser = {
+          'name': name,
+          'result': pointsLocal
+        }
+        newTable = [...newTable, newUser]
+        saveData(storageConstants.RESULT, JSON.stringify(newTable))
+        console.log(tableData)
+        navigation.navigate('Trainings')
+      }
+    }
     else {
       setShortCounter(shortCounter + 1)
       setCounter(counter + 1);
@@ -167,7 +199,7 @@ export default function Where({ route, navigation }) {
       setIsFirstIterationEnded(false);
       if (excersiseElements === 0 && shortCounter < 4) {
         setGameElements(getRandomGame(whereSzSounds, gameElements));
-        setShoudMusicStart(!shoudMusicStart)
+        setIsTemp(!isTemp)
       } else {
         setLetterChoose(false)
         setExcersiseElements(getRandomElement(whereLetterSounds, usedLetters, setUsedLetters))
@@ -186,6 +218,7 @@ export default function Where({ route, navigation }) {
           setisExcersiseDone(true);
           break;
         } else {
+          setPointsLocal(pointsLocal + 1)
           setIsExcersiseFail(true);
           break;
         }
@@ -196,6 +229,7 @@ export default function Where({ route, navigation }) {
           setisExcersiseDone(true);
           break;
         } else {
+          setPointsLocal(pointsLocal + 1)
           setIsExcersiseFail(true);
           break;
         }
@@ -207,6 +241,7 @@ export default function Where({ route, navigation }) {
           setisExcersiseDone(true);
           break;
         } else {
+          setPointsLocal(pointsLocal + 1)
           setIsExcersiseFail(true);
           break;
         }
@@ -216,6 +251,7 @@ export default function Where({ route, navigation }) {
           setisExcersiseDone(true);
           break;
         } else {
+          setPointsLocal(pointsLocal + 1)
           setIsExcersiseFail(true);
           break;
         }
@@ -231,6 +267,11 @@ export default function Where({ route, navigation }) {
   useEffect(() => {
     if (isFocused) {
       setCounter(0)
+      readData(storageConstants.RESULT).then(value => {
+        if (value == null) console.log('blaba')
+        else setTableData(JSON.parse(value))
+      }
+      )
       setLetterChoose(false)
       setUsedLetters([]);
       setShortCounter(0)
@@ -260,7 +301,7 @@ export default function Where({ route, navigation }) {
           break;
       }
       console.log('Toggle should music start')
-      setShoudMusicStart(!shoudMusicStart);
+      setIsTemp(!isTemp);
     }
   }, [excersiseElements])
 
@@ -289,13 +330,11 @@ export default function Where({ route, navigation }) {
         }
       }
     }
-  }, [isTemp, shoudMusicStart])
+  }, [isTemp])
 
   useEffect(() => {
-    if (Loaded) {
       console.log('Play use effect')
       PlayAudio();
-    }
   }, [isTemp2])
 
   //Prevent from going back when music is on
@@ -313,7 +352,7 @@ export default function Where({ route, navigation }) {
 
   return (
     <View style={stylesPage.container}>
-      <ImageBackground source={require('../../../../assets/backgrounds/Example.png')} resizeMode="cover" style={stylesPage.backimage}>
+      <ImageBackground source={backSource} resizeMode="cover" style={stylesPage.backimage}>
         <ProgressBar counter={counter} max={excersise.repeat} />
         <LogoExcersise />
         {gameElements !== undefined &&
@@ -321,7 +360,7 @@ export default function Where({ route, navigation }) {
             {
               diceImages.map((dice, idx) =>
                 <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => userPick(idx + 1)}>
-                  <Image style={[stylesPage.imageButtonDice, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={dice}></Image>
+                  <Image style={[isSmall ? stylesPage.imageButtonDiceTablet : stylesPage.imageButtonDice, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={dice}></Image>
                 </TouchableOpacity>
               )
             }

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useIsFocused } from "@react-navigation/native";
 import * as React from 'react';
-import { Text, View, Image, TouchableOpacity, ImageBackground, BackHandler } from 'react-native';
+import { Text, View, Image, TouchableOpacity, ImageBackground, BackHandler, Dimensions } from 'react-native';
 import { Audio } from 'expo-av';
 import ProgressBar from '../../../elements/ProgressBar/ProgressBar';
 import LogoExcersise from '../../../elements/LogoExcersise/LogoExcersise';
@@ -31,6 +31,12 @@ export default function SoundCheck({ route, navigation }) {
 
   const [Loaded, SetLoaded] = useState(false);
   const sound = useRef(new Audio.Sound());
+
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
+  
+  let backSource = require('../../../../assets/backgrounds/Example.png');
+  if ((windowHeight / windowWidth) < 1.7) backSource = require('../../../../assets/backgrounds/ExampleB.png')
 
   const UpdateStatus = async (data) => {
     try {
@@ -172,7 +178,7 @@ export default function SoundCheck({ route, navigation }) {
 
   return (
     <View style={stylesPage.container}>
-      <ImageBackground source={require('../../../../assets/backgrounds/Example.png')} resizeMode="cover" style={stylesPage.backimage}>
+      <ImageBackground source={backSource} resizeMode="cover" style={stylesPage.backimage}>
         <ProgressBar counter={counter} max={excersise.repeat} />
         <LogoExcersise />
         {excersiseElements !== undefined &&

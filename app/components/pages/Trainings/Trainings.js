@@ -1,13 +1,18 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as React from 'react';
-import { Text, View, TouchableOpacity, ImageBackground } from 'react-native';
+import { Text, View, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
 import stylesPage from './Trainings.style';
 import { trainingsService } from '../../../services/trainingsService';
 
 export default function Trainings({ navigation }) {
     const trainings = useSelector((state) => state.trainings);
     const dispatch = useDispatch()
+
+    const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
+    let backSource = require('../../../assets/backgrounds/Excersises.png');
+    if ((windowHeight / windowWidth) < 1.7) backSource = require('../../../assets/backgrounds/ExcersisesB.png')
 
     useEffect(() => {
         dispatch(trainingsService.fetchExcersise())
@@ -17,7 +22,7 @@ export default function Trainings({ navigation }) {
 
     return (
         <View style={stylesPage.container}>
-            <ImageBackground source={require('../../../assets/backgrounds/Excersises.png')} resizeMode="cover" style={stylesPage.backimage}>
+            <ImageBackground source={backSource} resizeMode="cover" style={stylesPage.backimage}>
                 {
                     trainings.map((excersise, index) =>
                         <TouchableOpacity key={index}

@@ -4,7 +4,7 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        marginTop: -70
+        marginTop: -50
     },
     backimage: {
         flex: 1,
@@ -16,8 +16,8 @@ export default StyleSheet.create({
         borderRadius: 1000,
         borderWidth: 10,
         marginTop: 30,
-        width: 165,
-        height: 165,
+        width: 180,
+        height: 180,
         justifyContent: 'center',
         alignItems: 'center'
     },

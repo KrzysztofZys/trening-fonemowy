@@ -2,6 +2,6 @@
     "route": "Breaking",
     "name": "Sylabowanie",
     "description": "Zaznacz ile wylab miał wypowiedziany wyraz.",
-    "repeat": 8,
+    "repeat": 2,
     "levels": ["łatwe", "trudne"]
 }

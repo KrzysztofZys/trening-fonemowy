@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useIsFocused } from "@react-navigation/native";
 import * as React from 'react';
-import { Text, View, Image, TouchableOpacity, ImageBackground, BackHandler } from 'react-native';
+import { Text, View, Image, TouchableOpacity, ImageBackground, BackHandler, Dimensions } from 'react-native';
 import { Audio } from 'expo-av';
 import ProgressBar from '../../../elements/ProgressBar/ProgressBar';
 import LogoExcersise from '../../../elements/LogoExcersise/LogoExcersise';
@@ -15,7 +15,8 @@ import differentionImages from '../../../importedImages/differentionImages';
 import differentionSounds from '../../../importedSounds/differentionSounds';
 
 export default function Differention({ route, navigation }) {
-  const { excersise, index } = route.params;
+  const { excersise, index, name, points, trainings } = route.params;
+  const [pointsLocal, setPointsLocal] = useState(points);
   const isFocused = useIsFocused();
   const [counter, setCounter] = useState(0);
 
@@ -30,6 +31,18 @@ export default function Differention({ route, navigation }) {
 
   const [Loaded, SetLoaded] = useState(false);
   const sound = useRef(new Audio.Sound());
+
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
+
+  const [isSmall, setIsSmall] = useState(false);
+
+  useEffect(() => {
+    if ((windowHeight / windowWidth) < 1.7) setIsSmall(true);
+  })
+
+  let backSource = require('../../../../assets/backgrounds/Example.png');
+  if ((windowHeight / windowWidth) < 1.7) backSource = require('../../../../assets/backgrounds/ExampleB.png')
 
   const UpdateStatus = async (data) => {
     try {
@@ -104,7 +117,16 @@ export default function Differention({ route, navigation }) {
   }
 
   const nextSequence = () => {
-    if (isFinished) navigation.navigate('Trainings');
+    if (isFinished) {
+      if (name === undefined) navigation.navigate('Trainings')
+      else {
+        excersiseInfo = trainings[4]
+        const indexInfo = 1
+        const pointsInfo = pointsLocal
+        console.log(pointsInfo)
+        navigation.navigate('Info', { excersiseInfo, indexInfo, name, pointsInfo, trainings })
+      }
+    }
     else {
       setExcersiseElements(getRandomElement(differentionSounds, excersiseElements))
       setCounter(counter + 1)
@@ -118,6 +140,7 @@ export default function Differention({ route, navigation }) {
       setIsExcersiseFail(false);
       setisExcersiseDone(true);
     } else {
+      setPointsLocal(pointsLocal + 1)
       setIsExcersiseFail(true);
     }
   }
@@ -172,16 +195,17 @@ export default function Differention({ route, navigation }) {
 
   return (
     <View style={stylesPage.container}>
-      <ImageBackground source={require('../../../../assets/backgrounds/Example.png')} resizeMode="cover" style={stylesPage.backimage}>
+      <ImageBackground source={backSource} resizeMode="cover" style={stylesPage.backimage}>
         <ProgressBar counter={counter} max={excersise.repeat} />
         <LogoExcersise />
+        {name != null && <Text style={stylesPage.name}>Badanie: {name}</Text>}
         {excersiseElements !== undefined &&
           <View style={stylesPage.excersiseContainer}>
             <TouchableOpacity style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => userPick(0)}>
-              <Image style={[stylesPage.imageButtonLetter, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={differentionImages[2 * counter % differentionImages.length]}></Image>
+              <Image style={[isSmall ? stylesPage.imageButtonLetterTablet : stylesPage.imageButtonLetter, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={differentionImages[2 * counter % differentionImages.length]}></Image>
             </TouchableOpacity>
             <TouchableOpacity style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => userPick(1)}>
-              <Image style={[stylesPage.imageButtonLetter, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={differentionImages[(2 * counter % differentionImages.length) + 1]}></Image>
+              <Image style={[isSmall ? stylesPage.imageButtonLetterTablet : stylesPage.imageButtonLetter, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={differentionImages[(2 * counter % differentionImages.length) + 1]}></Image>
             </TouchableOpacity>
           </View>
         }

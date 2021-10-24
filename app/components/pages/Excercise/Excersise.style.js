@@ -34,10 +34,21 @@ export default StyleSheet.create({
         marginBottom: 20,
         marginHorizontal: 20
     },
+    imageButtonLetterTablet: {
+        height: 142,
+        width: 140,
+        marginBottom: 20,
+        marginHorizontal: 70
+    },
     imageButtonSmall: {
         height: 110,
         width: 110,
         margin: 10
+    },
+    imageButtonSmallTablet: {
+        height: 110,
+        width: 110,
+        margin: 25
     },
     imageButtonLow: {
         height: 60,
@@ -50,9 +61,14 @@ export default StyleSheet.create({
         margin: 15
     },
     imageButtonDice: {
-        height: 80,
-        width: 80,
+        height: 100,
+        width: 100,
         margin: 10
+    },
+    imageButtonDiceTablet: {
+        height: 120,
+        width: 120,
+        margin: 20
     },
     button: {
         
@@ -65,6 +81,10 @@ export default StyleSheet.create({
         alignSelf: 'flex-end',
         height: '30%',
         width: '100%',
-        paddingHorizontal: 70
+        paddingHorizontal: '15%'
+    },
+    name: {
+        fontSize: 25,
+        marginHorizontal: 5
     }
 });
