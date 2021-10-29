@@ -183,10 +183,10 @@ export default function SoundCheck({ route, navigation }) {
         <LogoExcersise />
         {excersiseElements !== undefined &&
           <View style={stylesPage.excersiseContainer}>
-            <TouchableOpacity style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => userPick('high')}>
+            <TouchableOpacity style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick('high')}>
               <Image style={[stylesPage.imageButtonHigh, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={soundcheckImages[2 * index]}></Image>
             </TouchableOpacity>
-            <TouchableOpacity style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => userPick('low')}>
+            <TouchableOpacity style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick('low')}>
               <Image style={[stylesPage.imageButtonLow, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={soundcheckImages[2 * index + 1]}></Image>
             </TouchableOpacity>
           </View>

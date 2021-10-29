@@ -2,6 +2,6 @@
     "route": "Where",
     "name": "Gdzie głoska?",
     "description": "Zaznacz, w której sylabie znajduje się usłyszana głoska.",
-    "repeat": 2,
+    "repeat": 7,
     "levels": ["wszystkie"]
 }

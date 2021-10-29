@@ -3,14 +3,14 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
     comment:{
         height: 100,
-        width: 100,
+        width: 100
     },
     commentBox:{
         position:'absolute',
         height: 100,
         width: 100,
         left: '38%',
-        bottom: '24%',
+        bottom: '8%'
     },
     soundButton:{
         alignSelf: 'flex-end'

@@ -13,6 +13,7 @@ import stylesPage from '../Excersise.style';
 import getRandomElement from '../../../../utils/functions/getRandomElement';
 import differentionImages from '../../../importedImages/differentionImages';
 import differentionSounds from '../../../importedSounds/differentionSounds';
+import instructionsSounds from '../../../importedSounds/instructionsSounds';
 
 export default function Differention({ route, navigation }) {
   const { excersise, index, name, points, trainings } = route.params;
@@ -28,6 +29,7 @@ export default function Differention({ route, navigation }) {
 
   const [isFirstIterationEnded, setIsFirstIterationEnded] = useState(false);
   const [shoudMusicStart, setShoudMusicStart] = useState();
+  const [isInstruction, setIsInstruction] = useState(false);
 
   const [Loaded, SetLoaded] = useState(false);
   const sound = useRef(new Audio.Sound());
@@ -39,10 +41,20 @@ export default function Differention({ route, navigation }) {
 
   useEffect(() => {
     if ((windowHeight / windowWidth) < 1.7) setIsSmall(true);
-  })
+  }, [])
 
   let backSource = require('../../../../assets/backgrounds/Example.png');
   if ((windowHeight / windowWidth) < 1.7) backSource = require('../../../../assets/backgrounds/ExampleB.png')
+
+  const clearData = () => {
+    setCounter(0)
+    setIsFinished(false)
+    setisExcersiseDone(false);
+    setIsExcersiseFail(false);
+    setIsFirstIterationEnded(false);
+    setIsInstruction(false);
+    setPointsLocal(0)
+  }
 
   const UpdateStatus = async (data) => {
     try {
@@ -101,7 +113,11 @@ export default function Differention({ route, navigation }) {
         try {
           const result = await sound.current.unloadAsync();
           if (result.isLoaded === false) {
-            setIsFirstIterationEnded(true);
+            if(!isInstruction) setIsInstruction(true)
+            else {
+              setIsFirstIterationEnded(true);
+            }
+
             SetLoaded(false);
           }
         } catch (error) {
@@ -124,6 +140,7 @@ export default function Differention({ route, navigation }) {
         const indexInfo = 1
         const pointsInfo = pointsLocal
         console.log(pointsInfo)
+        clearData();
         navigation.navigate('Info', { excersiseInfo, indexInfo, name, pointsInfo, trainings })
       }
     }
@@ -154,14 +171,22 @@ export default function Differention({ route, navigation }) {
   //Initial ExcersiseElements
   useEffect(() => {
     if (isFocused) {
-      setExcersiseElements(getRandomElement(differentionSounds, excersiseElements))
       setCounter(0)
       setIsFinished(false)
       setisExcersiseDone(false);
       setIsExcersiseFail(false);
       setIsFirstIterationEnded(false);
+      setIsInstruction(false);
+      setShoudMusicStart(!shoudMusicStart);
+      setPointsLocal(points)
     };
   }, [isFocused])
+
+  useEffect(() => {
+    if(isInstruction === true) {
+      setExcersiseElements(getRandomElement(differentionSounds, excersiseElements))
+    }
+  }, [isInstruction])
 
   //Toggle start music when new elements
   useEffect(() => {
@@ -171,6 +196,10 @@ export default function Differention({ route, navigation }) {
   //Sequence
   useEffect(() => {
     if (!isFirstIterationEnded) {
+      if(!isInstruction) {
+        LoadAudio(instructionsSounds[0])
+        PlayAudio()
+      }
       if (excersiseElements !== undefined) {
         LoadAudio(differentionSounds[excersiseElements])
         PlayAudio()
@@ -181,16 +210,15 @@ export default function Differention({ route, navigation }) {
   //Prevent from going back when music is on
   useEffect(() => {
     const backAction = () => {
-      if (isFirstIterationEnded) {
-        return false;
-      }
+      if (isFirstIterationEnded && name === undefined) return false;
       return true;
     };
+
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
     return () => backHandler.remove();
-  }, [isFirstIterationEnded]);
-
+  }, [isFirstIterationEnded, name]);
+  
   if (excersise === undefined) return <View style={stylesPage.container}><Text style={stylesPage.mainText}>No data</Text></View>
 
   return (
@@ -198,13 +226,13 @@ export default function Differention({ route, navigation }) {
       <ImageBackground source={backSource} resizeMode="cover" style={stylesPage.backimage}>
         <ProgressBar counter={counter} max={excersise.repeat} />
         <LogoExcersise />
-        {name != null && <Text style={stylesPage.name}>Badanie: {name}</Text>}
+        {/* {name != null && <Text style={stylesPage.name}>Badanie: {name}</Text>} */}
         {excersiseElements !== undefined &&
           <View style={stylesPage.excersiseContainer}>
-            <TouchableOpacity style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => userPick(0)}>
+            <TouchableOpacity style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick(0)}>
               <Image style={[isSmall ? stylesPage.imageButtonLetterTablet : stylesPage.imageButtonLetter, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={differentionImages[2 * counter % differentionImages.length]}></Image>
             </TouchableOpacity>
-            <TouchableOpacity style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => userPick(1)}>
+            <TouchableOpacity style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick(1)}>
               <Image style={[isSmall ? stylesPage.imageButtonLetterTablet : stylesPage.imageButtonLetter, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={differentionImages[(2 * counter % differentionImages.length) + 1]}></Image>
             </TouchableOpacity>
           </View>

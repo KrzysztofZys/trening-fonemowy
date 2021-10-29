@@ -2,6 +2,6 @@
     "route": "SoundCheck",
     "name": "Rozróżnienie dźwięków",
     "description": "Wskaż jaki dźwięk usłyszałeś! Wysoki czy niski? Głośny czy cichy?",
-    "repeat": 5,
+    "repeat": 4,
     "levels": ["amplitudy", "głośność"]
 }

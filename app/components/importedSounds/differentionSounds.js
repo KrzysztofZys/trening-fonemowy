@@ -17,8 +17,7 @@ const differentionSounds = [
     require('../../assets/sounds/differention/sz07.mp3'),
     require('../../assets/sounds/differention/s08.mp3'),
     require('../../assets/sounds/differention/sz08.mp3'),
-    require('../../assets/sounds/differention/s09.mp3'),
-    require('../../assets/sounds/differention/sz09.mp3')
+    require('../../assets/sounds/differention/s09.mp3')
 ];
 
 export default differentionSounds;

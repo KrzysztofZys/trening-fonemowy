@@ -14,6 +14,7 @@ import getRandomElementBreaking from '../../../../utils/functions/getRandomEleme
 import diceImages from '../../../importedImages/diceImages';
 import breakingSoundsEasy from '../../../importedSounds/breakingSoundsEasy';
 import breakingSoundsHard from '../../../importedSounds/breakingSoundsHard';
+import instructionsSounds from '../../../importedSounds/instructionsSounds';
 
 export default function Breaking({ route, navigation }) {
   const { excersise, index, name, points, trainings } = route.params;
@@ -29,6 +30,7 @@ export default function Breaking({ route, navigation }) {
 
   const [isFirstIterationEnded, setIsFirstIterationEnded] = useState(false);
   const [shoudMusicStart, setShoudMusicStart] = useState();
+  const [isInstruction, setIsInstruction] = useState(false);
 
   const [Loaded, SetLoaded] = useState(false);
   const sound = useRef(new Audio.Sound());
@@ -39,10 +41,20 @@ export default function Breaking({ route, navigation }) {
 
   useEffect(() => {
     if ((windowHeight / windowWidth) < 1.7) setIsSmall(true);
-  })
+  }, [])
 
   let backSource = require('../../../../assets/backgrounds/Example.png');
   if ((windowHeight / windowWidth) < 1.7) backSource = require('../../../../assets/backgrounds/ExampleB.png')
+
+  const clearData = () => {
+    setCounter(0)
+    setIsFinished(false)
+    setisExcersiseDone(false);
+    setIsExcersiseFail(false);
+    setIsFirstIterationEnded(false);
+    setIsInstruction(false);
+    setPointsLocal(0)
+  }
 
   const UpdateStatus = async (data) => {
     try {
@@ -101,7 +113,11 @@ export default function Breaking({ route, navigation }) {
         try {
           const result = await sound.current.unloadAsync();
           if (result.isLoaded === false) {
-            setIsFirstIterationEnded(true);
+            if (!isInstruction) setIsInstruction(true)
+            else {
+              setIsFirstIterationEnded(true);
+            }
+
             SetLoaded(false);
           }
         } catch (error) {
@@ -123,24 +139,22 @@ export default function Breaking({ route, navigation }) {
         excersiseInfo = trainings[5]
         const indexInfo = 0
         const pointsInfo = pointsLocal
+        clearData()
         navigation.navigate('Info', { excersiseInfo, indexInfo, name, pointsInfo, trainings })
       }
     }
     else {
       if (index === 0) setExcersiseElements(getRandomElementBreaking(breakingSoundsEasy, excersiseElements.sound, index))
       else setExcersiseElements(getRandomElementBreaking(breakingSoundsHard, excersiseElements.sound, index))
-      setCounter(counter + 1)
+      
       setisExcersiseDone(false);
       setIsFirstIterationEnded(false)
+      setCounter(counter + 1)
     }
   }
 
   const userPick = (element) => {
-    console.log(index)
-    console.log('pick' + element)
-    console.log('value' + excersiseElements.value)
     if (element === excersiseElements?.value) {
-
       setIsExcersiseFail(false);
       setisExcersiseDone(true);
     } else {
@@ -156,15 +170,23 @@ export default function Breaking({ route, navigation }) {
   //Initial ExcersiseElements
   useEffect(() => {
     if (isFocused) {
-      if (index === 0) setExcersiseElements(getRandomElementBreaking(breakingSoundsEasy, excersiseElements.sound, index))
-      else setExcersiseElements(getRandomElementBreaking(breakingSoundsHard, excersiseElements.sound, index))
       setCounter(0)
       setIsFinished(false)
       setisExcersiseDone(false);
       setIsExcersiseFail(false);
       setIsFirstIterationEnded(false);
+      setIsInstruction(false);
+      setShoudMusicStart(!shoudMusicStart);
+      setPointsLocal(points)
     };
   }, [isFocused])
+
+  useEffect(() => {
+    if (isInstruction === true) {
+      if (index === 0) setExcersiseElements(getRandomElementBreaking(breakingSoundsEasy, excersiseElements.sound, index))
+      else setExcersiseElements(getRandomElementBreaking(breakingSoundsHard, excersiseElements.sound, index))
+    }
+  }, [isInstruction])
 
   //Toggle start music when new elements
   useEffect(() => {
@@ -174,24 +196,29 @@ export default function Breaking({ route, navigation }) {
   //Sequence
   useEffect(() => {
     if (!isFirstIterationEnded) {
+      if (!isInstruction) {
+        LoadAudio(instructionsSounds[1])
+        PlayAudio()
+      }
       if (excersiseElements.sound !== undefined) {
         if (index === 0) LoadAudio(breakingSoundsEasy[excersiseElements.sound])
         else LoadAudio(breakingSoundsHard[excersiseElements.sound])
         PlayAudio()
-      }
+      } 
     }
   }, [Loaded, shoudMusicStart])
 
   //Prevent from going back when music is on
   useEffect(() => {
     const backAction = () => {
-      if (isFirstIterationEnded) return false;
+      if (isFirstIterationEnded && name === undefined) return false;
       return true;
     };
+
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
     return () => backHandler.remove();
-  }, [isFirstIterationEnded]);
+  }, [isFirstIterationEnded, name]);
 
   if (excersise === undefined) return <View style={stylesPage.container}><Text style={stylesPage.mainText}>No data</Text></View>
 
@@ -204,7 +231,7 @@ export default function Breaking({ route, navigation }) {
           <View style={stylesPage.excersiseContainer}>
             {
               diceImages.map((dice, idx) =>
-                <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => userPick(idx + 1)}>
+                <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick(idx + 1)}>
                   <Image style={[isSmall ? stylesPage.imageButtonDiceTablet : stylesPage.imageButtonDice, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={dice}></Image>
                 </TouchableOpacity>
               )

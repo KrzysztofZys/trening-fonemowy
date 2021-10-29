@@ -24,6 +24,7 @@ function getRandomExcersiseElements(elements, level, isRepeatedAllowed) {
       else excersises = [...excersises, newElement];
     } else excersises = [...excersises, newElement];
   }
+
   return excersises;
 }
 
@@ -229,7 +230,7 @@ export default function Rythm({ route, navigation }) {
           <View style={stylesPage.excersiseContainer}>
             {
               excersiseElements.map((element, idx) =>
-                <TouchableOpacity style={stylesPage.button} key={idx} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => addToUserCombination(element)}>
+                <TouchableOpacity style={stylesPage.button} key={idx} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => addToUserCombination(element)}>
                   <Image style={[isSmall ? stylesPage.imageButtonSmallTablet : stylesPage.imageButtonSmall , !isFirstIterationEnded && stylesPage.buttonDisabled]} source={rythmImages[element.id]}></Image>
                 </TouchableOpacity>
               )

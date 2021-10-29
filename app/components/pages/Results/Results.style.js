@@ -4,13 +4,21 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#170e76',
-        alignItems: "center"
+        alignItems: "center",
+        width: '100%'
     },
     subcontainer: {
         flex: 1,
-        height: '100%',
+        paddingVertical: 40,
+        height: '80%',
+        width: '100%',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+    },
+    scrollContainer: {
+        width: '80%',
+        borderColor: '#ffffff',
+        borderWidth: StyleSheet.hairlineWidth
     },
     mainText: {
         marginTop: 50,

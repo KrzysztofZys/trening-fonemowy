@@ -17,8 +17,7 @@ export default StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         height: '100%',
-        marginHorizontal: 80,
-        marginTop: '13%',
+        marginHorizontal: 100,
         marginBottom: '50%',
         justifyContent: 'center',
         alignItems: 'center'
@@ -35,10 +34,9 @@ export default StyleSheet.create({
         marginHorizontal: 20
     },
     imageButtonLetterTablet: {
-        height: 142,
-        width: 140,
-        marginBottom: 20,
-        marginHorizontal: 70
+        height: 183,
+        width: 180,
+        margin: 30
     },
     imageButtonSmall: {
         height: 110,
@@ -46,19 +44,31 @@ export default StyleSheet.create({
         margin: 10
     },
     imageButtonSmallTablet: {
-        height: 110,
-        width: 110,
+        height: 150,
+        width: 150,
         margin: 25
     },
+    imageButtonParonymTablet: {
+        height: 150,
+        width: 150,
+        marginBottom: 50,
+        marginHorizontal: 50
+    },
+    imageButtonParonym: {
+        height: 110,
+        width: 110,
+        margin: 10
+    },
     imageButtonLow: {
-        height: 60,
-        width: 60,
-        margin: 15
+        height: 90,
+        width: 90,
+        padding: 60,
+        margin: 25
     },
     imageButtonHigh: {
-        height: 140,
-        width: 140,
-        margin: 15
+        height: 220,
+        width: 220,
+        margin: 25
     },
     imageButtonDice: {
         height: 100,
@@ -66,20 +76,44 @@ export default StyleSheet.create({
         margin: 10
     },
     imageButtonDiceTablet: {
-        height: 120,
-        width: 120,
-        margin: 20
+        height: 160,
+        width: 160,
+        marginVertical: 20,
+        marginHorizontal: 20
+    },
+    imageButtonWhere: {
+        height: 100,
+        width: 200,
+        margin: 10
+    },
+    imageButtonWhere2Tablet: {
+        height: 125,
+        width: 275,
+        marginVertical: 20,
+        marginHorizontal: 0
+    },
+    imageButtonWhere3Tablet: {
+        height: 125,
+        width: 270,
+        marginVertical: 20,
+        marginHorizontal: 0
+    },
+    imageButtonWhere4Tablet: {
+        height: 100,
+        width: 275,
+        marginVertical: 15,
+        marginHorizontal: 0
     },
     button: {
-        
+
     },
     buttonDisabled: {
         opacity: 0.1
     },
     bottomContainer: {
-        flex: 1,
-        alignSelf: 'flex-end',
-        height: '30%',
+        position: 'absolute',
+        bottom: 0,
+        height: '17%',
         width: '100%',
         paddingHorizontal: '15%'
     },

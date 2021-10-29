@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { useEffect } from 'react';
+import { useIsFocused } from "@react-navigation/native";
+import { Text, View, TouchableOpacity, BackHandler } from 'react-native';
 import stylesPage from './Info.style';
 
 export default function Info({ route, navigation }) {
@@ -8,6 +10,22 @@ export default function Info({ route, navigation }) {
     const excersise = excersiseInfo
     const points = pointsInfo
     const index = indexInfo
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        const onBackPress = () => {
+            if(isFocused && name !== undefined) {
+                navigation.navigate('Trainings')
+                return true;
+            } else return false;
+            
+        };
+
+        BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+        return () =>
+            BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [isFocused, name])
 
     if (excersiseInfo === undefined) return <View style={stylesPage.container}><Text style={stylesPage.mainText}>No data</Text></View>
 

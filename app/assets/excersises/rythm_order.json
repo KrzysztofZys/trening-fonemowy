@@ -2,7 +2,7 @@
     "route": "Rythm",
     "name": "Odtworzenie rytmu",
     "description": "Wskaż prawidłową kolejność usłyszanych dźwięków",
-    "repeat": 2,
+    "repeat": 8,
     "levels": [ "2 dźwięki", "3 dźwięki", "4 dźwięki" ],
     "elements": [
         {
@@ -25,24 +25,18 @@
         },
         {
             "id": 3,
-            "name": "dzwonek",
-            "sound": "bell.mp3",
-            "image": "bell.png"
-        },
-        {
-            "id": 4,
             "name": "gitara",
             "sound": "guitar.mp3",
             "image": "guitar.png"
         },
         {
-            "id": 5,
+            "id": 4,
             "name": "trąbka",
             "sound": "trumpet.mp3",
             "image": "trumpet.png"
         },
         {
-            "id": 6,
+            "id": 5,
             "name": "skrzypce",
             "sound": "violin.mp3",
             "image": "violin.png"

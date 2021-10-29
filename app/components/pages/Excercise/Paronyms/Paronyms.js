@@ -60,11 +60,19 @@ export default function Paronyms({ route, navigation }) {
 
   useEffect(() => {
     if ((windowHeight / windowWidth) < 1.7) setIsSmall(true);
-  })
+  }, [])
   
   let backSource = require('../../../../assets/backgrounds/Example.png');
   if ((windowHeight / windowWidth) < 1.7) backSource = require('../../../../assets/backgrounds/ExampleB.png')
 
+  const clearData = () => {
+    setCounter(0)
+    setIsFinished(false)
+    setisExcersiseDone(false);
+    setIsExcersiseFail(false);
+    setIsFirstIterationEnded(false);
+    setPointsLocal(0)
+  }
 
   const UpdateStatus = async (data) => {
     try {
@@ -142,10 +150,10 @@ export default function Paronyms({ route, navigation }) {
     if (isFinished) {
       if (name === undefined) navigation.navigate('Trainings')
       else {
-        excersiseInfo = trainings[3]
+        const excersiseInfo = trainings[3]
         const indexInfo = 0
         const pointsInfo = pointsLocal
-        console.log(pointsInfo)
+        clearData();
         navigation.navigate('Info', { excersiseInfo, indexInfo, name, pointsInfo, trainings })
       }
     }
@@ -182,6 +190,7 @@ export default function Paronyms({ route, navigation }) {
       setisExcersiseDone(false);
       setIsExcersiseFail(false);
       setIsFirstIterationEnded(false);
+      setPointsLocal(points)
     };
   }, [isFocused])
 
@@ -206,13 +215,14 @@ export default function Paronyms({ route, navigation }) {
   //Prevent from going back when music is on
   useEffect(() => {
     const backAction = () => {
-      if (isFirstIterationEnded) return false;
+      if (isFirstIterationEnded && name === undefined) return false;
       return true;
     };
+
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
     return () => backHandler.remove();
-  }, [isFirstIterationEnded]);
+  }, [isFirstIterationEnded, name]);
 
   if (excersise === undefined) return <View style={stylesPage.container}><Text style={stylesPage.mainText}>No data</Text></View>
 
@@ -221,13 +231,13 @@ export default function Paronyms({ route, navigation }) {
       <ImageBackground source={backSource} resizeMode="cover" style={stylesPage.backimage}>
         <ProgressBar counter={counter} max={excersise.repeat} />
         <LogoExcersise />
-        {name != null && <Text style={stylesPage.name}>Badanie: {name}</Text>}
+        {/* {name != null && <Text style={stylesPage.name}>Badanie: {name}</Text>} */}
         {gameElements !== undefined &&
           <View style={stylesPage.excersiseContainer}>
             {
               gameElements.map((element, idx) =>
-                <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => userPick(element)}>
-                  <Image style={[isSmall ? stylesPage.imageButtonSmallTablet : stylesPage.imageButtonSmall, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={paronymsImages[element]}></Image>
+                <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick(element)}>
+                  <Image style={[isSmall ? stylesPage.imageButtonParonymTablet : stylesPage.imageButtonParonym, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={paronymsImages[element]}></Image>
                 </TouchableOpacity>
               )
             }

@@ -2,6 +2,6 @@
     "route": "Paronyms",
     "name": "Paronimy",
     "description": "Wskaż, gdzie znajduje się wypowiedziany wyraz",
-    "repeat": 2,
-    "levels": ["szumiące"]
+    "repeat": 10,
+    "levels": ["wszystkie"]
 }

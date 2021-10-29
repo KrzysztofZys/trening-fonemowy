@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import * as React from 'react';
-import { Text, View, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
+import { useIsFocused } from "@react-navigation/native";
+import { Text, View, TouchableOpacity, ImageBackground, Dimensions, BackHandler } from 'react-native';
 import stylesPage from './Levels.style';
 
 export default function Levels({ route, navigation }) {
@@ -11,8 +13,24 @@ export default function Levels({ route, navigation }) {
 
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
+    const isFocused = useIsFocused();
     let backSource = require('../../../assets/backgrounds/Excersises.png');
     if ((windowHeight / windowWidth) < 1.7) backSource = require('../../../assets/backgrounds/ExcersisesB.png')
+
+    useEffect(() => {
+        const onBackPress = () => {
+            if(isFocused) {
+                navigation.navigate('Trainings')
+                return true;
+            } else return false;
+            
+        };
+
+        BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+        return () =>
+            BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [isFocused])
 
     return (
         <View style={stylesPage.container}>

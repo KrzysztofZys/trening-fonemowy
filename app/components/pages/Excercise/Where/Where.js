@@ -11,6 +11,9 @@ import AudioButton from '../../../elements/Buttons/AudioButton';
 import NextButton from '../../../elements/Buttons/NextButton';
 import stylesPage from '../Excersise.style';
 import diceImages from '../../../importedImages/diceImages';
+import where2Images from '../../../importedImages/where2Images';
+import where3Images from '../../../importedImages/where3Images';
+import where4Images from '../../../importedImages/where4Images';
 import whereLetterSounds from '../../../importedSounds/whereLetterSounds';
 import whereSzSounds from '../../../importedSounds/whereSzSounds';
 import whereCzSounds from '../../../importedSounds/whereCzSounds';
@@ -30,13 +33,18 @@ function getRandomElement(elements, usedLetters, setFunc) {
 
     let includes = false;
     for (let i = 0; i < usedLetters.length; i++) {
-      if (usedLetters[i] === rand) includes = true;
+      if (usedLetters[i] === rand) {
+        includes = true;
+      }
+      console.log(usedLetters[i]);
     }
 
     if (!includes) {
       difNum = false
       setFunc([...usedLetters, rand]);
     }
+
+    console.log('while loop')
   }
   return rand;
 }
@@ -85,9 +93,22 @@ export default function Where({ route, navigation }) {
   const windowHeight = Dimensions.get('window').height;
   const [isSmall, setIsSmall] = useState(false);
 
+  const cleanData = () => {
+    setCounter(0)
+    setLetterChoose(false)
+    setUsedLetters([])
+    setShortCounter(0)
+    setIsFinished(false)
+    setisExcersiseDone(false);
+    setIsExcersiseFail(false);
+    setIsFirstIterationEnded(false);
+    setExcersiseElements(10)
+    setPointsLocal(0)
+  }
+
   useEffect(() => {
     if ((windowHeight / windowWidth) < 1.7) setIsSmall(true);
-  })
+  }, [])
 
   let backSource = require('../../../../assets/backgrounds/Example.png');
   if ((windowHeight / windowWidth) < 1.7) backSource = require('../../../../assets/backgrounds/ExampleB.png')
@@ -144,7 +165,7 @@ export default function Where({ route, navigation }) {
   };
 
   const UnloadAudio = async () => {
-    
+
     const checkLoading = await sound.current.getStatusAsync();
 
     if (checkLoading.isLoaded)
@@ -176,9 +197,12 @@ export default function Where({ route, navigation }) {
 
   const nextSequence = () => {
     if (isFinished) {
-      if (name === undefined) navigation.navigate('Trainings')
+      if (name === undefined) {
+        navigation.navigate('Trainings')
+        cleanData();
+      }
       else {
-        if(tableData === '') {
+        if (tableData === '') {
           setTableData = [];
         }
         let newTable = tableData
@@ -189,18 +213,22 @@ export default function Where({ route, navigation }) {
         newTable = [...newTable, newUser]
         saveData(storageConstants.RESULT, JSON.stringify(newTable))
         console.log(tableData)
+        cleanData();
         navigation.navigate('Trainings')
       }
     }
     else {
-      setShortCounter(shortCounter + 1)
+      if (excersiseElements === 0) setShortCounter(shortCounter + 1);
       setCounter(counter + 1);
       setisExcersiseDone(false);
       setIsFirstIterationEnded(false);
-      if (excersiseElements === 0 && shortCounter < 4) {
+      console.log('Short: ' + shortCounter)
+      if (excersiseElements === 0 && shortCounter < 5) {
         setGameElements(getRandomGame(whereSzSounds, gameElements));
         setIsTemp(!isTemp)
+        console.log('new game elements')
       } else {
+        console.log('letter choose false')
         setLetterChoose(false)
         setExcersiseElements(getRandomElement(whereLetterSounds, usedLetters, setUsedLetters))
       }
@@ -208,12 +236,14 @@ export default function Where({ route, navigation }) {
   }
 
   const userPick = (element) => {
+    console.log('Game: ' + gameElements + ' Exc: ' + excersiseElements + ' Pick: ' + element)
     switch (excersiseElements) {
       case 0:
-        if ((gameElements < 8 && element === 1) ||
-          (gameElements < 14 && gameElements > 7 && element === 2) ||
-          (gameElements < 20 && gameElements > 13 && element === 3) ||
-          (gameElements === 20 && element === 4)) {
+        if ((element === 0 && (gameElements < 4 || gameElements === 9 || gameElements === 10)) ||
+          (element === 1 && ((gameElements > 3 && gameElements < 8) || (gameElements > 10 && gameElements < 15))) ||
+          (element === 2 && ((gameElements === 8) || (gameElements > 14 && gameElements < 20))) ||
+          (element === 3 && gameElements === 20)
+        ) {
           setIsExcersiseFail(false);
           setisExcersiseDone(true);
           break;
@@ -223,8 +253,10 @@ export default function Where({ route, navigation }) {
           break;
         }
       case 1:
-        if ((gameElements === 0 && element === 1) ||
-          (gameElements < 6 && gameElements > 0 && element === 2)) {
+        if ((element === 0 && gameElements === 0) ||
+          (element === 1 && ((gameElements > 0 && gameElements < 3) || gameElements > 3 )) ||
+          (element === 2 && gameElements === 3)
+        ) {
           setIsExcersiseFail(false);
           setisExcersiseDone(true);
           break;
@@ -234,9 +266,10 @@ export default function Where({ route, navigation }) {
           break;
         }
       case 2:
-        if ((gameElements < 2 && element === 1) ||
-          (gameElements < 4 && gameElements > 1 && element === 2) ||
-          (gameElements === 4 && element === 4)) {
+        if ((element === 0 && gameElements === 2) ||
+          (element === 1 && (gameElements < 2 || gameElements > 3 )) ||
+          (element === 3 && gameElements === 4)
+        ) {
           setIsExcersiseFail(false);
           setisExcersiseDone(true);
           break;
@@ -246,7 +279,9 @@ export default function Where({ route, navigation }) {
           break;
         }
       case 3:
-        if (element === 1) {
+        if ((element === 0 && gameElements < 2) ||
+          (element === 1 && gameElements > 1)
+        ) {
           setIsExcersiseFail(false);
           setisExcersiseDone(true);
           break;
@@ -273,13 +308,13 @@ export default function Where({ route, navigation }) {
       }
       )
       setLetterChoose(false)
-      setUsedLetters([]);
       setShortCounter(0)
       setIsFinished(false)
       setisExcersiseDone(false);
       setIsExcersiseFail(false);
       setIsFirstIterationEnded(false);
       setExcersiseElements(getRandomElement(whereLetterSounds, usedLetters, setUsedLetters))
+      setPointsLocal(points)
     };
   }, [isFocused])
 
@@ -333,20 +368,21 @@ export default function Where({ route, navigation }) {
   }, [isTemp])
 
   useEffect(() => {
-      console.log('Play use effect')
-      PlayAudio();
+    console.log('Play use effect')
+    PlayAudio();
   }, [isTemp2])
 
   //Prevent from going back when music is on
   useEffect(() => {
     const backAction = () => {
-      if (isFirstIterationEnded) return false;
+      if (isFirstIterationEnded && name === undefined) return false;
       return true;
     };
+
     const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
 
     return () => backHandler.remove();
-  }, [isFirstIterationEnded]);
+  }, [isFirstIterationEnded, name]);
 
   if (excersise === undefined) return <View style={stylesPage.container}><Text style={stylesPage.mainText}>No data</Text></View>
 
@@ -357,10 +393,33 @@ export default function Where({ route, navigation }) {
         <LogoExcersise />
         {gameElements !== undefined &&
           <View style={stylesPage.excersiseContainer}>
-            {
-              diceImages.map((dice, idx) =>
-                <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail} onPress={() => userPick(idx + 1)}>
-                  <Image style={[isSmall ? stylesPage.imageButtonDiceTablet : stylesPage.imageButtonDice, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={dice}></Image>
+            {((excersiseElements === 0 && gameElements < 9) ||
+              excersiseElements === 1 && gameElements < 4 ||
+              excersiseElements === 2 && gameElements < 2 ||
+              excersiseElements === 3)
+              &&
+              where2Images.map((image, idx) =>
+                <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick(idx)}>
+                  <Image style={[isSmall ? stylesPage.imageButtonWhere2Tablet : stylesPage.imageButtonWhere, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={image}></Image>
+                </TouchableOpacity>
+              )
+            }
+            {((excersiseElements === 0 && (gameElements > 8 && gameElements < 20)) ||
+              excersiseElements === 1 && gameElements > 3 ||
+              excersiseElements === 2 && (gameElements === 2 || gameElements === 3))
+              &&
+              where3Images.map((image, idx) =>
+                <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick(idx)}>
+                  <Image style={[isSmall ? stylesPage.imageButtonWhere3Tablet : stylesPage.imageButtonWhere, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={image}></Image>
+                </TouchableOpacity>
+              )
+            }
+            {((excersiseElements === 0 && gameElements > 19) ||
+              excersiseElements === 2 && gameElements == 4)
+              &&
+              where4Images.map((image, idx) =>
+                <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick(idx)}>
+                  <Image style={[isSmall ? stylesPage.imageButtonWhere4Tablet : stylesPage.imageButtonWhere, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={image}></Image>
                 </TouchableOpacity>
               )
             }

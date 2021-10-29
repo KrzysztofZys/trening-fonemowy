@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useIsFocused } from "@react-navigation/native";
 import { Text, View, TouchableOpacity, TextInput } from 'react-native';
 import stylesPage from './Name.style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,14 +12,15 @@ import { trainingsService } from '../../../services/trainingsService';
 
 function checkNameExist(data, name) {
     let isExist = false
-
+    console.log('Name' + name)
     if (data?.length > 0) {
         data.forEach((item) => {
-            if (item?.name === name) isExist = true
-            console.log(item)
+            console.log(item.name)
+            if (item.name === name) isExist = true
         })
     } else isExist = true
 
+    console.log('IsExist ' + isExist)   
     return isExist;
 }
 
@@ -32,23 +34,33 @@ export default function Name({ navigation }) {
     const indexInfo = 0;
     const pointsInfo = 0;
 
+    const isFocused = useIsFocused();
+
     useEffect(() => {
         dispatch(trainingsService.fetchExcersise())
     }, [])
 
-    readData(storageConstants.RESULT).then(value => {
-        if (value == null) console.log('blaba')
-        else setData(JSON.parse(value))
-    }
-    )
-
+    
     const handleForward = () => {
-        if (name == null && checkNameExist(data, name)) setIsWrongInput(true)
+        if (checkNameExist(data, name)) {
+            setIsWrongInput(true)
+        }
         else {
             navigation.navigate('Info', { excersiseInfo, indexInfo, name, pointsInfo, trainings })
         }
     }
 
+    useEffect(() => {
+        if(isFocused) {
+            readData(storageConstants.RESULT).then(value => {
+                if (value == null) console.log('blaba')
+                else setData(JSON.parse(value))
+            }
+            )
+            setIsWrongInput(false)
+            setName('');
+        }
+    }, [isFocused])
 
 
     return (
