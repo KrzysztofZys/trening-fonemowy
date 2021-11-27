@@ -28,9 +28,9 @@ export default StyleSheet.create({
         margin: 20
     },
     imageButtonLetter: {
-        height: 142,
-        width: 140,
-        marginBottom: 20,
+        height: 162,
+        width: 160,
+        marginBottom: 50,
         marginHorizontal: 20
     },
     imageButtonLetterTablet: {
@@ -55,9 +55,9 @@ export default StyleSheet.create({
         marginHorizontal: 50
     },
     imageButtonParonym: {
-        height: 110,
-        width: 110,
-        margin: 10
+        height: 130,
+        width: 130,
+        margin: 20
     },
     imageButtonLow: {
         height: 90,
@@ -81,10 +81,15 @@ export default StyleSheet.create({
         marginVertical: 20,
         marginHorizontal: 20
     },
-    imageButtonWhere: {
+    imageButtonWhere3: {
         height: 100,
-        width: 200,
+        width: 220,
         margin: 10
+    },
+    imageButtonWhere4: {
+        height: 100,
+        width: 275,
+        marginVertical: 10
     },
     imageButtonWhere2Tablet: {
         height: 125,
@@ -108,7 +113,7 @@ export default StyleSheet.create({
 
     },
     buttonDisabled: {
-        opacity: 0.1
+        opacity: 0.3
     },
     bottomContainer: {
         position: 'absolute',

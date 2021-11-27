@@ -4,10 +4,11 @@ export default function getRandomElementBreaking(elements, lastNum, index) {
         'sound': 0
     }
 
+    console.log(lastNum)
     let difNum = true;
-    let rand = Math.floor(Math.random() * (elements.length+1));
+    let rand = Math.floor(Math.random() * (elements.length));
     while (difNum) {
-        rand = Math.floor(Math.random() * (elements.length+1));
+        rand = Math.floor(Math.random() * (elements.length));
         if (rand !== lastNum) difNum = false
     }
 
@@ -21,6 +22,8 @@ export default function getRandomElementBreaking(elements, lastNum, index) {
         else if ( 7 <= rand && rand < 18 ) newElement.value = 3;
         else newElement.value = 4;
     }
+
+    console.log(newElement)
 
     return newElement;
 }

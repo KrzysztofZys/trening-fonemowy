@@ -200,6 +200,7 @@ export default function Breaking({ route, navigation }) {
         LoadAudio(instructionsSounds[1])
         PlayAudio()
       }
+      console.log('Start Load ' + excersiseElements)
       if (excersiseElements.sound !== undefined) {
         if (index === 0) LoadAudio(breakingSoundsEasy[excersiseElements.sound])
         else LoadAudio(breakingSoundsHard[excersiseElements.sound])

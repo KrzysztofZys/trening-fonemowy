@@ -104,6 +104,7 @@ export default function Where({ route, navigation }) {
     setIsFirstIterationEnded(false);
     setExcersiseElements(10)
     setPointsLocal(0)
+    console.log('sprztam')
   }
 
   useEffect(() => {
@@ -202,7 +203,7 @@ export default function Where({ route, navigation }) {
         cleanData();
       }
       else {
-        if (tableData === '') {
+        if (tableData === '' || tableData === undefined) {
           setTableData = [];
         }
         let newTable = tableData
@@ -267,7 +268,7 @@ export default function Where({ route, navigation }) {
         }
       case 2:
         if ((element === 0 && gameElements === 2) ||
-          (element === 1 && (gameElements < 2 || gameElements > 3 )) ||
+          (element === 1 && (gameElements < 2 || gameElements > 2 )) ||
           (element === 3 && gameElements === 4)
         ) {
           setIsExcersiseFail(false);
@@ -375,7 +376,10 @@ export default function Where({ route, navigation }) {
   //Prevent from going back when music is on
   useEffect(() => {
     const backAction = () => {
-      if (isFirstIterationEnded && name === undefined) return false;
+      if (isFirstIterationEnded && name === undefined) {
+        cleanData()
+        return false
+      };
       return true;
     };
 
@@ -400,7 +404,7 @@ export default function Where({ route, navigation }) {
               &&
               where2Images.map((image, idx) =>
                 <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick(idx)}>
-                  <Image style={[isSmall ? stylesPage.imageButtonWhere2Tablet : stylesPage.imageButtonWhere, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={image}></Image>
+                  <Image style={[isSmall ? stylesPage.imageButtonWhere2Tablet : stylesPage.imageButtonWhere3, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={image}></Image>
                 </TouchableOpacity>
               )
             }
@@ -410,7 +414,7 @@ export default function Where({ route, navigation }) {
               &&
               where3Images.map((image, idx) =>
                 <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick(idx)}>
-                  <Image style={[isSmall ? stylesPage.imageButtonWhere3Tablet : stylesPage.imageButtonWhere, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={image}></Image>
+                  <Image style={[isSmall ? stylesPage.imageButtonWhere3Tablet : stylesPage.imageButtonWhere3, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={image}></Image>
                 </TouchableOpacity>
               )
             }
@@ -419,7 +423,7 @@ export default function Where({ route, navigation }) {
               &&
               where4Images.map((image, idx) =>
                 <TouchableOpacity key={idx} style={stylesPage.button} disabled={!isFirstIterationEnded || isExcersiseFail || isExcersiseDone} onPress={() => userPick(idx)}>
-                  <Image style={[isSmall ? stylesPage.imageButtonWhere4Tablet : stylesPage.imageButtonWhere, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={image}></Image>
+                  <Image style={[isSmall ? stylesPage.imageButtonWhere4Tablet : stylesPage.imageButtonWhere4, !isFirstIterationEnded && stylesPage.buttonDisabled]} source={image}></Image>
                 </TouchableOpacity>
               )
             }

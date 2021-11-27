@@ -19,6 +19,7 @@ import Differention from '../components/pages/Excercise/Differention/Differentio
 import Breaking from '../components/pages/Excercise/Breaking/Breaking'
 import Where from '../components/pages/Excercise/Where/Where'
 import Results from '../components/pages/Results/Results';
+import Credits from '../components/pages/Credits/Credits';
 
 const Drawer = createDrawerNavigator();
 
@@ -109,6 +110,20 @@ export default function DrawerNav() {
                 fontWeight: 'bold',
               },
               drawerLabel: 'WYNIKI'
+            }} />
+            <Drawer.Screen
+            name="O aplikacji"
+            component={Credits}
+            options={{
+              title: 'O APLIKACJI',
+              headerStyle: {
+                backgroundColor: '#170e67',
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+              drawerLabel: 'O APLIKACJI'
             }} />
             <Drawer.Screen
             name="Levels"

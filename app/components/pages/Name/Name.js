@@ -18,7 +18,7 @@ function checkNameExist(data, name) {
             console.log(item.name)
             if (item.name === name) isExist = true
         })
-    } else isExist = true
+    } else isExist = false
 
     console.log('IsExist ' + isExist)   
     return isExist;
