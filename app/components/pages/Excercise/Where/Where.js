@@ -203,19 +203,30 @@ export default function Where({ route, navigation }) {
         cleanData();
       }
       else {
-        if (tableData === '' || tableData === undefined) {
-          setTableData = [];
+        try {
+          let newTable;
+          if (tableData === '' || tableData === undefined || tableData?.length === 0) {
+            console.log(tableData)
+            console.log('no data from table')
+            newTable = [];
+          } else newTable = tableData;
+          console.log('save data to new table')
+          console.log(tableData)
+          
+          const newUser = {
+            'name': name,
+            'result': pointsLocal
+          }
+          newTable = [...newTable, newUser]
+          console.log('saving data to table')
+          saveData(storageConstants.RESULT, JSON.stringify(newTable))
+          console.log(tableData)
+          cleanData();
+          navigation.navigate('Trainings')
+        } catch (e) {
+          console.log(e)
         }
-        let newTable = tableData
-        const newUser = {
-          'name': name,
-          'result': pointsLocal
-        }
-        newTable = [...newTable, newUser]
-        saveData(storageConstants.RESULT, JSON.stringify(newTable))
-        console.log(tableData)
-        cleanData();
-        navigation.navigate('Trainings')
+        
       }
     }
     else {

@@ -12,7 +12,6 @@ import { trainingsService } from '../../../services/trainingsService';
 
 function checkNameExist(data, name) {
     let isExist = false
-    console.log('Name' + name)
     if (data?.length > 0) {
         data.forEach((item) => {
             console.log(item.name)
@@ -53,7 +52,7 @@ export default function Name({ navigation }) {
     useEffect(() => {
         if(isFocused) {
             readData(storageConstants.RESULT).then(value => {
-                if (value == null) console.log('blaba')
+                if (value === null) console.log('blaba')
                 else setData(JSON.parse(value))
             }
             )
